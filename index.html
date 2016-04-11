@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>instafinder</title>
+        <link rel="stylesheet" href="main.css">
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script>
+    $(document).ready(function(){
+      var search = prompt("Search for anything:");
+      var id;
+      $(".instagram").addClass("loader");
+      $.getJSON("http://cooper-union-instagram-proxy.herokuapp.com/search/tag/" + search.replace(" ","") + "?count=50", function(response){
+        id = Math.floor((Math.random() * response.length));
+        $(".instagram").removeClass("loader");
+        $(".instagram").html("<a target='_blank' href='" + response[id].link + "'><img id='insta' src=" + response[id].images.standard_resolution.url + " /></a>");
+      });
+      $.getJSON("http://cooper-union-twitter-proxy.herokuapp.com/twitter/search?q=" + search + "&count=50", function(response){
+        id = Math.floor((Math.random() * response.error.statuses.length));
+        $(".twitter").html("<a target='_blank' href='https://twitter.com/" + response.error.statuses[id].user.screen_name + "/status/" + response.error.statuses[id].id_str + "'>" + response.error.statuses[id].text + "</a>");
+      });
+    });
+    </script>
+  </head>
+  <body>
+  <style>
+      body {
+          background-image:url(http://fm100.com/wp-content/uploads/2016/04/instagram-logo.png);
+      }
+
+      p {
+        font-family:impact;
+        font-size: 40px;
+        color: #CCFF99;
+        font-weight:bold;
+        position: fixed;
+      }
+
+     header {
+       font-family: cursive;
+       font-weight: bolder;
+       font-size: 25px;
+       color: #FFFF00;
+     }
+  </style>
+
+    <p>This is the most recent instagram/twitter post.</p>
+    <div class="instagram"></div>
+    <div class="twitter"></div>
+
+  </body>
+</html>
